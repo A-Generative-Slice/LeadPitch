@@ -29,6 +29,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: 🔍 Verify Secrets
+      run: |
+        echo "Checking for required secrets..."
+        if [ -z "${{ secrets.OPENROUTER_API_KEY }}" ]; then echo "❌ Missing OPENROUTER_API_KEY"; else echo "✅ OPENROUTER_API_KEY found"; fi
+        if [ -z "${{ secrets.GH_TOKEN }}" ]; then echo "❌ Missing GH_TOKEN"; else echo "✅ GH_TOKEN found"; fi
+        if [ -z "${{ secrets.SMTP_PASSWORD }}" ]; then echo "❌ Missing SMTP_PASSWORD"; else echo "✅ SMTP_PASSWORD found"; fi
+        if [ -z "${{ secrets.SMTP_EMAIL }}" ]; then echo "❌ Missing SMTP_EMAIL"; else echo "✅ SMTP_EMAIL found"; fi
+
     - name: 🚀 Run Outreach (Turbo Mode)
       env:
         OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
