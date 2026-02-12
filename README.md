@@ -1,25 +1,27 @@
-# 🦅 LeadPitch
+# 🦅 LeadPitch: Hyper-Personalized Outreach
 
-**AI-powered sales pitches that don't sound like they were written by a blender.**
+**Turning cold leads into warm conversations using AI that actually "gets it."**
 
-LeadPitch is a lightweight, set-it-and-forget-it automation for sending professional, highly-personalized outreach emails. It drips out one email every 10 minutes so you don't get flag-shamed by spam filters or hit your AI quotas too fast.
+LeadPitch is your invisible sales assistant. It generates personalized, human-sounding pitches and drips them out from your own Gmail account—avoiding spam filters and robotic clichés.
 
-## 💅 The Vibe
-- **No Markdown in your emails**: Because real humans don't send emails with triple backticks and bold headers.
-- **10-minute Drip**: Smooth like butter. One lead at a time.
-- **Auto-Sync**: Updates your `clients.csv` on GitHub every time it sends a mail. You can track your progress while drinking a latte.
-- **Cloud-Ready**: Native support for Railway so it runs while you sleep.
+## ✨ The Vibe
+- **Pure Human**: No backticks, no markdown, no "AI-detected" formatting. Just clean text.
+- **Smart Drip**: 10-minute intervals for longevity, or **Turbo Mode** for speed. 🏎️
+- **Auto-Sync**: Your `clients.csv` stays updated on GitHub in real-time. Track your wins on the go.
+- **Codespace Ready**: Zero setup. Launch directly in your browser and start pitching.
 
-## 🚀 Speedrun Setup
-1. Fill `clients.csv` with your leads.
-2. Toss your keys into `.env`.
-3. Run the scheduler:
-   ```bash
-   python3 main.py --schedule
-   ```
+## 🚀 Quick Launch
+1.  **Drop your Leads**: Fill `clients.csv` with your targets.
+2.  **Config Secrets**: Add your keys to GitHub Codespaces (see [Guide](./CODESPACES_GUIDE.md)).
+3.  **Choose your Speed**:
+    - **Smooth Drip (10 min)**: `python3 main.py --schedule`
+    - **Turbo Mode (20 sec)**: `python3 main.py --all`
 
-## 🌩️ Deployment
-If you want to run this in the cloud (Railway style), check out the [RAILWAY_GUIDE.md](./RAILWAY_GUIDE.md). It's basically magic.
+## 🛠️ Tech Stack
+- **Brain**: OpenAI / OpenRouter (Gemini 2.0 Flash)
+- **Engine**: Python + Pandas
+- **Outreach**: SMTP (Gmail)
+- **Platform**: GitHub Codespaces
 
 ---
-*Built with ❤️ and a bit too much caffeine by A Generative Slice.*
+*Built for the bold by **A Generative Slice**.*
