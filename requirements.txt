@@ -1,0 +1,7 @@
+openai
+pandas
+python-dotenv
+yagmail
+apscheduler
+GitPython
+flask
