@@ -60,3 +60,59 @@ def sync_csv_to_github(csv_path):
     except Exception as e:
         print(f"Error in GitHub API sync: {e}")
         return False
+
+def send_github_notification(status="OFFLINE"):
+    """
+    Creates an issue on GitHub to trigger a push notification to the user's phone.
+    """
+    github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
+    repo_name = "LeadPitch"
+    username = "A-Generative-Slice"
+    
+    if not github_token:
+        return
+
+    url = f"https://api.github.com/repos/{username}/{repo_name}/issues"
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    title = f"🔴 LeadPitch Status: {status}"
+    body = f"Alert: The LeadPitch automation process in Codespaces has entered state: {status}.\nTime: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    
+    data = {"title": title, "body": body}
+    try:
+        requests.post(url, headers=headers, json=data)
+        print(f"GitHub Notification Sent: {status}")
+    except:
+        pass
+
+def clear_github_notifications():
+    """
+    Closes any open 'Offline' issues to keep the notification list clean.
+    """
+    github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
+    repo_name = "LeadPitch"
+    username = "A-Generative-Slice"
+    
+    if not github_token:
+        return
+
+    url = f"https://api.github.com/repos/{username}/{repo_name}/issues?state=open"
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            issues = response.json()
+            for issue in issues:
+                if "LeadPitch Status" in issue['title']:
+                    issue_url = f"https://api.github.com/repos/{username}/{repo_name}/issues/{issue['number']}"
+                    requests.patch(issue_url, headers=headers, json={"state": "closed"})
+            print("Cleared previous status notifications from GitHub.")
+    except:
+        pass

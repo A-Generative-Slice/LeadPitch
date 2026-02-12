@@ -6,9 +6,22 @@ from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from src.processor import LeadProcessor
 
-import sys
+import signal
+import atexit
+from src.git_util import send_github_notification, clear_github_notifications
 
 app = Flask(__name__)
+
+def handle_exit(signum, frame):
+    """Sends a notification to GitHub when the process is killed."""
+    print(f"\nShutdown signal received ({signum}). Sending notification...", flush=True)
+    send_github_notification("OFFLINE")
+    sys.exit(0)
+
+# Register exit handlers
+signal.signal(signal.SIGTERM, handle_exit)
+signal.signal(signal.SIGINT, handle_exit)
+atexit.register(lambda: send_github_notification("OFFLINE"))
 
 @app.route("/")
 def health_check():
@@ -50,6 +63,10 @@ def main():
     parser.add_argument("--all", action="store_true", help="Process all unsent leads sequentially")
     
     args = parser.parse_args()
+
+    # Clear old notifications and start fresh
+    clear_github_notifications()
+    print("LeadPitch is starting up...", flush=True)
 
     if args.schedule:
         # Start scheduler in a background thread
