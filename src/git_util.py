@@ -11,8 +11,9 @@ def sync_csv_to_github(csv_path):
     Updates the CSV on GitHub using the REST API.
     More reliable in cloud environments than GitPython.
     """
-    github_token = os.getenv("GITHUB_TOKEN")
-    repo_name = "LeadPitch" # Assuming the repo name
+    # GitHub doesn't allow secrets to start with GITHUB_, so we use GH_TOKEN
+    github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
+    repo_name = "LeadPitch" 
     username = "A-Generative-Slice" # Assuming the username
     
     if not github_token:

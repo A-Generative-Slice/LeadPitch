@@ -16,7 +16,7 @@ GitHub Codespaces handles secrets securely. You don't need a `.env` file!
     - `SMTP_EMAIL`: (Your Gmail address)
     - `SMTP_PASSWORD`: (Your 16-character App Password)
     - `COMPANY_NAME`: `"A Generative Slice"`
-    - `GITHUB_TOKEN`: (Your ghp_... token)
+    - `GH_TOKEN`: (Your ghp_... token)
 
 *(Note: If you already have the Codespace open, you'll need to restart it for these secrets to take effect.)*
 
