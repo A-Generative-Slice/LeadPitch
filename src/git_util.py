@@ -6,22 +6,27 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def _get_repo_info():
+    """Helper to get repo owner and name dynamically."""
+    full_repo = os.getenv("GITHUB_REPOSITORY") # "owner/repo" in Actions
+    if full_repo and "/" in full_repo:
+        username, repo_name = full_repo.split("/")
+        return username, repo_name
+    return "A-Generative-Slice", "LeadPitch"
+
 def sync_csv_to_github(csv_path):
     """
     Updates the CSV on GitHub using the REST API.
     More reliable in cloud environments than GitPython.
     """
-    # GitHub doesn't allow secrets to start with GITHUB_, so we use GH_TOKEN
     github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
-    repo_name = "LeadPitch" 
-    username = "A-Generative-Slice" # Assuming the username
+    username, repo_name = _get_repo_info()
     
     if not github_token:
-        print("GITHUB_TOKEN not set. Skipping sync.")
+        print("DEBUG: GITHUB_TOKEN not set. Real-time API sync skipped.", flush=True)
         return False
 
     try:
-        # 1. Get current file data to get the 'sha' (required for updates)
         url = f"https://api.github.com/repos/{username}/{repo_name}/contents/{csv_path}"
         headers = {
             "Authorization": f"token {github_token}",
@@ -30,18 +35,16 @@ def sync_csv_to_github(csv_path):
         
         get_response = requests.get(url, headers=headers)
         if get_response.status_code != 200:
-            print(f"Failed to fetch file info from GitHub: {get_response.text}")
+            print(f"DEBUG: Failed to fetch file info for {csv_path}: {get_response.status_code}", flush=True)
             return False
         
         file_data = get_response.json()
         sha = file_data['sha']
 
-        # 2. Read local file and encode to base64
         with open(csv_path, "rb") as f:
             content = base64.b64encode(f.read()).decode("utf-8")
 
-        # 3. Update the file
-        commit_message = f"Cloud Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        commit_message = f"Cloud Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [skip ci]"
         put_data = {
             "message": commit_message,
             "content": content,
@@ -50,15 +53,15 @@ def sync_csv_to_github(csv_path):
         }
         
         put_response = requests.put(url, headers=headers, json=put_data)
-        if put_response.status_code == 200:
-            print(f"Successfully updated {csv_path} on GitHub via API.")
+        if put_response.status_code in [200, 201]:
+            print(f"✅ Real-time sync: {csv_path} updated on GitHub.", flush=True)
             return True
         else:
-            print(f"Failed to update GitHub: {put_response.text}")
+            print(f"❌ API Sync Failed ({put_response.status_code}): {put_response.text}", flush=True)
             return False
 
     except Exception as e:
-        print(f"Error in GitHub API sync: {e}")
+        print(f"DEBUG: Error in API sync: {e}", flush=True)
         return False
 
 def send_github_notification(status="OFFLINE"):
@@ -66,8 +69,7 @@ def send_github_notification(status="OFFLINE"):
     Creates an issue on GitHub to trigger a push notification to the user's phone.
     """
     github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
-    repo_name = "LeadPitch"
-    username = "A-Generative-Slice"
+    username, repo_name = _get_repo_info()
     
     if not github_token:
         return
@@ -79,12 +81,12 @@ def send_github_notification(status="OFFLINE"):
     }
     
     title = f"🔴 LeadPitch Status: {status}"
-    body = f"Alert: The LeadPitch automation process in Codespaces has entered state: {status}.\nTime: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    body = f"Alert: The LeadPitch automation process has entered state: {status}.\nTime: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
     
     data = {"title": title, "body": body}
     try:
         requests.post(url, headers=headers, json=data)
-        print(f"GitHub Notification Sent: {status}")
+        print(f"Notification Sent: {status}", flush=True)
     except:
         pass
 
@@ -93,8 +95,7 @@ def clear_github_notifications():
     Closes any open 'Offline' issues to keep the notification list clean.
     """
     github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
-    repo_name = "LeadPitch"
-    username = "A-Generative-Slice"
+    username, repo_name = _get_repo_info()
     
     if not github_token:
         return
@@ -113,6 +114,6 @@ def clear_github_notifications():
                 if "LeadPitch Status" in issue['title']:
                     issue_url = f"https://api.github.com/repos/{username}/{repo_name}/issues/{issue['number']}"
                     requests.patch(issue_url, headers=headers, json={"state": "closed"})
-            print("Cleared previous status notifications from GitHub.")
+            print("Cleared previous status notifications.", flush=True)
     except:
         pass
