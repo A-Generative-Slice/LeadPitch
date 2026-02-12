@@ -1,47 +1,61 @@
 import os
-import time
+import base64
+import requests
 from datetime import datetime
-from git import Repo
 from dotenv import load_dotenv
 
 load_dotenv()
 
 def sync_csv_to_github(csv_path):
     """
-    Commits and pushes the updated CSV back to GitHub.
-    Expected env: GITHUB_TOKEN or SSH setup.
+    Updates the CSV on GitHub using the REST API.
+    More reliable in cloud environments than GitPython.
     """
+    github_token = os.getenv("GITHUB_TOKEN")
+    repo_name = "LeadPitch" # Assuming the repo name
+    username = "A-Generative-Slice" # Assuming the username
+    
+    if not github_token:
+        print("GITHUB_TOKEN not set. Skipping sync.")
+        return False
+
     try:
-        repo_path = os.getcwd()
-        repo = Repo(repo_path)
+        # 1. Get current file data to get the 'sha' (required for updates)
+        url = f"https://api.github.com/repos/{username}/{repo_name}/contents/{csv_path}"
+        headers = {
+            "Authorization": f"token {github_token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
         
-        # Check if there are changes
-        if not repo.is_dirty(untracked_files=True):
-            print("No changes to sync to GitHub.")
+        get_response = requests.get(url, headers=headers)
+        if get_response.status_code != 200:
+            print(f"Failed to fetch file info from GitHub: {get_response.text}")
+            return False
+        
+        file_data = get_response.json()
+        sha = file_data['sha']
+
+        # 2. Read local file and encode to base64
+        with open(csv_path, "rb") as f:
+            content = base64.b64encode(f.read()).decode("utf-8")
+
+        # 3. Update the file
+        commit_message = f"Cloud Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        put_data = {
+            "message": commit_message,
+            "content": content,
+            "sha": sha,
+            "branch": "main"
+        }
+        
+        put_response = requests.put(url, headers=headers, json=put_data)
+        if put_response.status_code == 200:
+            print(f"Successfully updated {csv_path} on GitHub via API.")
+            return True
+        else:
+            print(f"Failed to update GitHub: {put_response.text}")
             return False
 
-        repo.git.add(csv_path)
-        commit_message = f"Update client send status: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-        repo.index.commit(commit_message)
-        
-        origin = repo.remote(name='origin')
-        
-        # Use GITHUB_TOKEN if available for authenticated push
-        github_token = os.getenv("GITHUB_TOKEN")
-        if github_token:
-            # Build the authenticated URL: https://<token>@github.com/<owner>/<repo>.git
-            remote_url = origin.url
-            if remote_url.startswith("https://"):
-                auth_url = remote_url.replace("https://", f"https://{github_token}@")
-                origin.set_url(auth_url)
-                print("Using GITHUB_TOKEN for authenticated push.")
-            elif remote_url.startswith("git@github.com:"):
-                # If SSH, we skip token injection as it's handled by SSH keys
-                print("SSH remote detected, skipping token injection.")
-
-        origin.push()
-        print(f"Successfully synced {csv_path} to GitHub.")
-        return True
     except Exception as e:
-        print(f"Error syncing to GitHub: {e}")
+        print(f"Error in GitHub API sync: {e}")
         return False
