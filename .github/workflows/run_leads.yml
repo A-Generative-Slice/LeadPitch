@@ -3,7 +3,9 @@ name: 🦅 LeadPitch Autopilot
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Allows manual triggering from the GitHub Actions tab
+    paths-ignore:
+      - 'clients.csv' # Don't trigger if ONLY the CSV changed
+  workflow_dispatch:
 
 jobs:
   outreach:
