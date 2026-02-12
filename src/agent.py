@@ -77,7 +77,8 @@ class PitchAgent:
                     {"role": "system", "content": "You are a professional B2B outreach expert. You write clean, plain-text style emails without ANY markdown symbols or placeholders. Everything you output must be the final text."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.7
+                temperature=0.7,
+                max_tokens=1000 # Limit tokens to stay within low-credit budgets
             )
             content = response.choices[0].message.content.strip()
             
