@@ -33,8 +33,14 @@ class LeadProcessor:
 
         unsent_leads = df[df['Sent Status'] == 'No']
         
+        print(f"DEBUG: Found {len(df)} total rows in CSV.", flush=True)
+        print(f"DEBUG: Found {len(unsent_leads)} leads with 'Sent Status' == 'No'.", flush=True)
+        
+        if not unsent_leads.empty:
+            print(f"DEBUG: First lead in queue: {unsent_leads.iloc[0].get('Client Name')} ({unsent_leads.iloc[0].get('Email ID')})", flush=True)
+
         if unsent_leads.empty:
-            print("No new leads to process.", flush=True)
+            print("No new leads to process. Check if 'Sent Status' column is correctly set to 'No' in your CSV.", flush=True)
             return
 
         leads_to_process = unsent_leads if all_leads else unsent_leads.iloc[:1]
