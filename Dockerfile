@@ -13,5 +13,8 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Expose the port Render expects
+EXPOSE 10000
+
 # Run main.py as a scheduler when the container launches
 CMD ["python", "main.py", "--schedule"]
