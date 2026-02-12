@@ -17,9 +17,9 @@ Railway is the best platform for this project because it supports background sch
 2. **Set Environment Variables**:
    In the Railway dashboard, go to the **Variables** tab and add the following:
    - `OPENROUTER_API_KEY`: Your OpenRouter key.
-   - `EMAIL_ADDRESS`: Your Gmail address.
-   - `EMAIL_PASSWORD`: Your Google App Password.
-   - `GITHUB_TOKEN`: The token you generated in Step 1.
+   - `RESEND_API_KEY`: The key from Resend (re_...).
+   - `GITHUB_TOKEN`: Your GitHub token.
+   - `COMPANY_NAME`: "A Generative Slice"
 
 3. **Deploy**:
    - Railway will automatically detect the `Dockerfile` and start your 10-minute drip automation.

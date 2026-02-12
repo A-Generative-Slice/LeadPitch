@@ -1,48 +1,47 @@
 import os
-import yagmail
+import resend
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class Mailer:
     def __init__(self):
-        self.email_user = os.getenv("SMTP_EMAIL")
-        self.email_pass = os.getenv("SMTP_PASSWORD")
-        
-        if not self.email_user or not self.email_pass:
-            print("Warning: SMTP_EMAIL or SMTP_PASSWORD not set in .env")
-            self.yag = None
+        self.api_key = os.getenv("RESEND_API_KEY")
+        if not self.api_key:
+            print("Warning: RESEND_API_KEY not set in .env")
         else:
-            try:
-                self.yag = yagmail.SMTP(self.email_user, self.email_pass)
-            except Exception as e:
-                print(f"Failed to initialize SMTP: {e}")
-                self.yag = None
-
+            resend.api_key = self.api_key
+            
     def send_email(self, to_email, subject, body):
         """
-        Sends an email using yagmail.
+        Sends an email using Resend API.
+        NOTE: Onboarding allows sending only to the account owner (agenerativeslice@gmail.com)
+        until a domain is verified.
         """
-        if not self.yag:
-            print(f"Skipping email to {to_email} (SMTP not configured or failed)")
-            # Log the pitch for manual review
+        if not self.api_key:
+            print(f"Skipping email to {to_email} (RESEND_API_KEY not set)")
             self._log_pitch(to_email, subject, body)
             return False
 
         try:
-            self.yag.send(
-                to=to_email,
-                subject=subject,
-                contents=body
-            )
-            print(f"Email successfully sent to {to_email}")
+            params = {
+                "from": "LeadPitch <onboarding@resend.dev>",
+                "to": [to_email],
+                "subject": subject,
+                "text": body,
+            }
+            
+            r = resend.Emails.send(params)
+            print(f"Email sent successfully to {to_email} via Resend. ID: {r['id']}")
             return True
         except Exception as e:
-            print(f"Error sending email to {to_email}: {e}")
+            print(f"Error sending email to {to_email} via Resend: {e}")
+            # If it's a domain verification error, we still log it
+            self._log_pitch(to_email, subject, body)
             return False
 
     def _log_pitch(self, to_email, subject, body):
-        """Logs the pitch to a file if email sending is skipped."""
+        """Logs the pitch to a file if email sending is skipped or fails."""
         log_dir = "logs"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
