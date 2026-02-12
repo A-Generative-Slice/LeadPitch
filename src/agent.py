@@ -70,36 +70,64 @@ class PitchAgent:
         [Write the actual email body here]
         """
 
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": "You are a professional B2B outreach expert. You write clean, plain-text style emails without ANY markdown symbols or placeholders. Everything you output must be the final text."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=1000 # Limit tokens to stay within low-credit budgets
-            )
-            content = response.choices[0].message.content.strip()
-            
-            # Remove any stray markdown artifacts if the AI slips up
-            content = content.replace("**", "")
+        # Initial token budget
+        current_max_tokens = 400
+        attempts = 0
+        max_attempts = 3
+        
+        while attempts < max_attempts:
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": "You are a professional B2B outreach expert. You write clean, plain-text style emails without ANY markdown symbols or placeholders. Everything you output must be the final text."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.7,
+                    max_tokens=current_max_tokens
+                )
+                content = response.choices[0].message.content.strip()
+                
+                # Remove any stray markdown artifacts if the AI slips up
+                content = content.replace("**", "")
 
-            # Split into subject and body
-            lines = content.split('\n', 1)
-            subject = "Discovery for " + company_name_lead
-            body = content
+                # Split into subject and body
+                lines = content.split('\n', 1)
+                subject = "Discovery for " + company_name_lead
+                body = content
 
-            if "Subject:" in lines[0]:
-                subject = lines[0].replace("Subject:", "").strip()
-                body = lines[1].strip() if len(lines) > 1 else ""
+                if "Subject:" in lines[0]:
+                    subject = lines[0].replace("Subject:", "").strip()
+                    body = lines[1].strip() if len(lines) > 1 else ""
 
-            # Final safety check to remove placeholders if AI ignores instructions
-            placeholders = ["[Your Name]", "[Contact Person Name]", "[Your Phone Number]", "[Subject]", "[Name]"]
-            for p in placeholders:
-                body = body.replace(p, "Mohammad Hussain" if "Name" in p else "93441 15330")
+                # Final safety check to remove placeholders if AI ignores instructions
+                placeholders = ["[Your Name]", "[Contact Person Name]", "[Your Phone Number]", "[Subject]", "[Name]"]
+                for p in placeholders:
+                    body = body.replace(p, "Mohammad Hussain" if "Name" in p else "93441 15330")
 
-            return subject, body
-        except Exception as e:
-            print(f"Error generating pitch for {company_name_lead}: {e}")
-            return None, None
+                return subject, body
+
+            except Exception as e:
+                error_str = str(e)
+                if "402" in error_str:
+                    attempts += 1
+                    # Try to extract the affordable token count from the error message if possible
+                    # Example: "you requested up to 1000 tokens, but can only afford 672"
+                    import re
+                    match = re.search(r"can only afford (\d+)", error_str)
+                    if match:
+                        affordable = int(match.group(1))
+                        # Set to affordable - 50 for safety margin
+                        current_max_tokens = max(50, affordable - 50)
+                    else:
+                        current_max_tokens //= 2 # Aggressive reduction
+                    
+                    print(f"⚠️ Low Credits (402): Retrying {company_name_lead} with {current_max_tokens} tokens...", flush=True)
+                    if current_max_tokens < 50:
+                        print(f"❌ Credits too low even for minimal pitch. Please top up: https://openrouter.ai/settings/credits", flush=True)
+                        break
+                else:
+                    print(f"Error generating pitch for {company_name_lead}: {e}")
+                    break
+        
+        return None, None
