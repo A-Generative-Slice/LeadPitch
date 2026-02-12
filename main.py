@@ -3,7 +3,7 @@ import time
 import os
 import threading
 from flask import Flask
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from src.processor import LeadProcessor
 
 app = Flask(__name__)
@@ -13,19 +13,23 @@ def health_check():
     return "LeadPitch is alive and kicking! 🦅", 200
 
 def run_scheduler(csv_path, dry_run):
-    scheduler = BlockingScheduler()
+    scheduler = BackgroundScheduler()
     # Run every 10 minutes
-    scheduler.add_job(job, 'interval', minutes=10, args=[csv_path, dry_run], next_run_time=None)
-    print("Scheduler started. Running one email every 10 minutes...")
-    try:
-        scheduler.start()
-    except (KeyboardInterrupt, SystemExit):
-        pass
+    scheduler.add_job(job, 'interval', minutes=10, args=[csv_path, dry_run])
+    
+    # Trigger the first job immediately
+    job(csv_path, dry_run)
+    
+    print("Scheduler initialized. Running one email every 10 minutes...")
+    scheduler.start()
 
 def job(csv_path, dry_run):
     print(f"Execution started at {time.ctime()}")
-    processor = LeadProcessor(csv_path)
-    processor.process_leads(dry_run=dry_run)
+    try:
+        processor = LeadProcessor(csv_path)
+        processor.process_leads(dry_run=dry_run)
+    except Exception as e:
+        print(f"Error in background job: {e}")
 
 def main():
     parser = argparse.ArgumentParser(description="LeadPitch: AI Sales Pitch Automation")
