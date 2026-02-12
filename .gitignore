@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.txt
+logs/
+.venv/
+venv/
+.gemini/
+.idea/
+.vscode/
+*.pyc
