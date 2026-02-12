@@ -10,7 +10,7 @@ class Mailer:
         self.email_pass = os.getenv("SMTP_PASSWORD")
         
         if not self.email_user or not self.email_pass:
-            print("Warning: SMTP_EMAIL or SMTP_PASSWORD not set in .env")
+            print("CRITICAL ERROR: SMTP_EMAIL or SMTP_PASSWORD is missing! Email sending will fail.", flush=True)
             self.yag = None
         else:
             try:

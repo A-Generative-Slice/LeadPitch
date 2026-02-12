@@ -9,12 +9,13 @@ class PitchAgent:
         # OpenRouter uses the OpenAI SDK with a custom base URL
         api_key = os.getenv("OPENROUTER_API_KEY")
         if not api_key:
-            print("Warning: OPENROUTER_API_KEY not set in .env")
-        
-        self.client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
-            api_key=api_key
-        )
+            print("CRITICAL ERROR: OPENROUTER_API_KEY is missing! Pitch generation will fail.", flush=True)
+            self.client = None
+        else:
+            self.client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=api_key
+            )
         self.model = os.getenv("OPENROUTER_MODEL", "google/gemini-2.0-flash-001")
         self.company_name = os.getenv("COMPANY_NAME", "Generative Slice")
 
