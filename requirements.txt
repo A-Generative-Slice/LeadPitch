@@ -5,4 +5,3 @@ yagmail
 apscheduler
 GitPython
 flask
-resend
