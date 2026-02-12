@@ -1,27 +1,41 @@
-# 🦅 LeadPitch: Hyper-Personalized Outreach
+# 🦅 LeadPitch: Hyper-Personalized Outreach (Cloud Edition)
 
 **Turning cold leads into warm conversations using AI that actually "gets it."**
 
-LeadPitch is your invisible sales assistant. It generates personalized, human-sounding pitches and drips them out from your own Gmail account—avoiding spam filters and robotic clichés.
+LeadPitch is an automated sales assistant that lives in your cloud. It generates personalized, human-sounding pitches using **Gemini 2.0 Flash** and sends them via your own Gmail—avoiding spam filters and ensuring 100% authenticity.
 
-## ✨ The Vibe
-- **Pure Human**: No backticks, no markdown, no "AI-detected" formatting. Just clean text.
-- **Smart Drip**: 10-minute intervals for longevity, or **Turbo Mode** for speed. 🏎️
-- **Auto-Sync**: Your `clients.csv` stays updated on GitHub in real-time. Track your wins on the go.
-- **Codespace Ready**: Zero setup. Launch directly in your browser and start pitching.
+## 🏎️ New Workflow: "Full Pilot"
+We've moved beyond manual scripts. LeadPitch now runs on **GitHub Actions**, meaning it works while you sleep.
 
-## 🚀 Quick Launch
-1.  **Drop your Leads**: Fill `clients.csv` with your targets.
-2.  **Config Secrets**: Add your keys to GitHub Codespaces (see [Guide](./CODESPACES_GUIDE.md)).
-3.  **Choose your Speed**:
-    - **Smooth Drip (10 min)**: `python3 main.py --schedule`
-    - **Turbo Mode (20 sec)**: `python3 main.py --all`
+- **Cloud-Native Automation**: Runs every hour (or manually) via GitHub Actions.
+- **🔍 Auto-Diagnostic**: Built-in secret verification ensures your keys are always set correctly.
+- **💾 Real-Time Sync**: Every email sent is immediately synced back to `clients.csv` in your repository.
+- **🛡️ Safety First**: Integrated token limits and "human-like" delays (20-60s) keep your accounts safe.
+
+## 🚀 Getting Started
+
+### 1. Configure Secrets
+Add your API keys and SMTP credentials to your repository secrets (**Settings > Secrets and variables > Actions**). See the [Configuration Guide](./CODESPACES_GUIDE.md) for details.
+
+### 2. Manual Trigger
+1. Go to the **Actions** tab in this repo.
+2. Select **"🦅 LeadPitch: Automated Outreach"**.
+3. Click **Run workflow** -> **Branch: main** -> **Run workflow**.
+
+### 3. Track Status
+- Open [clients.csv](./clients.csv) to see "Sent Status" change to **Yes** in real-time.
+- Check your Gmail "Sent" folder to see the actual pitches!
+
+## ✨ Key Features
+- **Zero Markdown**: Output is pure, clean text. No backticks or robotic placeholders.
+- **Smart Mapping**: Maps Industry, Pain Points, and Location into unique, contextual hooks.
+- **Low Credit Friendly**: Optimization for low-budget API usage (1000 token limit per request).
 
 ## 🛠️ Tech Stack
-- **Brain**: OpenAI / OpenRouter (Gemini 2.0 Flash)
-- **Engine**: Python + Pandas
-- **Outreach**: SMTP (Gmail)
-- **Platform**: GitHub Codespaces
+- **Brain**: OpenRouter (Gemini 2.0 Flash)
+- **Engine**: Python 3.10+ + Pandas
+- **Automation**: GitHub Actions (CI/CD)
+- **Outreach**: SMTP (Gmail App Passwords)
 
 ---
 *Built for the bold by **A Generative Slice**.*

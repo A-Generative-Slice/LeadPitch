@@ -1,38 +1,46 @@
-# 🛰️ Launching LeadPitch in Codespaces
+# 🛰️ Setting up LeadPitch (Secrets & Configuration)
 
-GitHub Codespaces is the ultimate home for LeadPitch. It bypasses cloud blocks and lets you use your personal Gmail account securely.
+LeadPitch is designed to run automatically on **GitHub Actions**, but it can also be run manually in **GitHub Codespaces**. Both require your secrets to be configured in your repository settings.
 
-### 1. 🔑 Configure your Secrets (Crucial)
-GitHub handles your keys so you don't have to worry about `.env` files.
-1.  In your Repo, go to **Settings** -> **Secrets and variables** -> **Codespaces**.
-2.  Add these **New repository secrets**:
-    - `OPENROUTER_API_KEY`: Your key from OpenRouter.
-    - `GH_TOKEN`: Your GitHub Personal Access Token (for auto-sync).
-    - `SMTP_EMAIL`: `agenerativeslice@gmail.com`
-    - `SMTP_PASSWORD`: Your 16-character Google App Password.
-    - `COMPANY_NAME`: `"A Generative Slice"`
-    - `OPENROUTER_MODEL`: `google/gemini-2.0-flash-001`
+## 🔑 1. Configure Repository Secrets (Required)
+GitHub handles your keys securely. You need to add these for the outreach to work.
 
-### 2. 🚀 Start the Engines
-1.  Click the green **"<> Code"** button and create a Codespace.
-2.  Once the terminal wakes up, run:
-    ```bash
-    pip install -r requirements.txt
-    ```
+1.  In your GitHub Repo, go to **Settings** -> **Secrets and variables** -> **Actions**.
+2.  Click **New repository secret** for each of the following:
+    - `OPENROUTER_API_KEY`: Your key from [OpenRouter](https://openrouter.ai/).
+    - `GH_TOKEN`: Your GitHub Personal Access Token (with `repo` permissions).
+    - `SMTP_EMAIL`: Your Gmail address (e.g., `agenerativeslice@gmail.com`).
+    - `SMTP_PASSWORD`: Your 16-character [Google App Password](https://myaccount.google.com/apppasswords).
+    - `COMPANY_NAME`: Your business name (e.g., `"A Generative Slice"`).
+    - `OPENROUTER_MODEL`: Use `google/gemini-2.0-flash-001` for best results.
+
+> [!TIP]
+> **Protip**: If you also want to use **Codespaces**, add these same secrets under **Settings -> Secrets and variables -> Codespaces** as well.
+
+## 🔍 2. The Verification Step
+When you run the GitHub Action, the first thing it does is **"🔍 Verify Secrets"**. 
+- Check the logs of this step to see if any keys are missing.
+- ✅ = Secret found.
+- ❌ = Secret missing (The workflow will print a warning but might still try to run).
+
+## 🚀 3. Manual Execution (Codespaces)
+If you want to run the script manually to test or debug:
+1.  Launch a **Codespace**.
+2.  Run `pip install -r requirements.txt`.
 3.  **Choose your Mission**:
-    - **The Marathon (Drip)**: Perfect for continuous, safe outreach.
+    - **Drip Mode**: Sequential sends with 10min delays.
       ```bash
       python3 main.py --schedule
       ```
-    - **The Sprint (Turbo)**: Sequential sends with a 20s "human" delay.
+    - **Turbo Mode**: 20s delays between sends.
       ```bash
       python3 main.py --all
       ```
 
-### 🔋 Pro Tips
-- **Stay Alive**: Keep the browser tab open to keep the script running.
-- **Secrets**: If you add secrets *after* starting, use `Ctrl+Shift+P` -> `Full Restart`.
-- **Visibility**: Watch your Gmail "Sent" folder to see the AI magic in real-time.
+## 🔋 Best Practices
+- **App Passwords**: Never use your real Gmail password. Use an [App Password](https://support.google.com/accounts/answer/185833).
+- **Token Limits**: The AI is currently capped at **1000 tokens** per request to save on your API credits.
+- **Auto-Sync**: The system automatically commits `clients.csv` changes with the tag `[skip ci]` to prevent infinite loops.
 
 ---
 *Powered by the cloud, tuned for results.* 🦅🔥
