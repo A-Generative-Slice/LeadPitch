@@ -46,10 +46,13 @@ jobs:
         SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         COMPANY_NAME: ${{ secrets.COMPANY_NAME }}
       run: |
-        # Run the bot in --all mode (Sequential with 20s delay)
         python3 main.py --all
 
-    - name: 🔔 Final Status
-      if: always()
+    - name: 💾 Commit & Push Changes
+      if: always() # Run even if outreach fails mid-way
       run: |
-        echo "Outreach session complete."
+        git config --global user.name "LeadPitch Bot"
+        git config --global user.email "bot@leadpitch.ai"
+        git add clients.csv
+        git commit -m "Cloud Update: Syncing sent status [skip ci]" || echo "No changes to commit"
+        git push origin main
