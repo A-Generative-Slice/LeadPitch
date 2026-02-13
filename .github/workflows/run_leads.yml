@@ -1,10 +1,12 @@
 name: 🦅 LeadPitch Autopilot
 
 on:
+  schedule:
+    - cron: '*/10 * * * *' # Run every 10 minutes
   push:
     branches: [ main ]
     paths-ignore:
-      - 'clients.csv' # Don't trigger if ONLY the CSV changed
+      - 'clients.csv'
   workflow_dispatch:
 
 jobs:
@@ -37,7 +39,7 @@ jobs:
         if [ -z "${{ secrets.SMTP_PASSWORD }}" ]; then echo "❌ Missing SMTP_PASSWORD"; else echo "✅ SMTP_PASSWORD found"; fi
         if [ -z "${{ secrets.SMTP_EMAIL }}" ]; then echo "❌ Missing SMTP_EMAIL"; else echo "✅ SMTP_EMAIL found"; fi
 
-    - name: 🚀 Run Outreach (Turbo Mode)
+    - name: 🚀 Run Outreach (Drip Mode)
       env:
         OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         OPENROUTER_MODEL: ${{ secrets.OPENROUTER_MODEL }}
@@ -46,7 +48,7 @@ jobs:
         SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         COMPANY_NAME: ${{ secrets.COMPANY_NAME }}
       run: |
-        python3 main.py --all
+        python3 main.py
 
     - name: 💾 Commit & Push Changes
       if: always() # Run even if outreach fails mid-way

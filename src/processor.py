@@ -80,6 +80,6 @@ class LeadProcessor:
                 sync_csv_to_github(self.csv_path)
 
             if all_leads and index != leads_to_process.index[-1]:
-                delay = 20 # 20 second gap between emails
+                delay = 600 # 10 minute gap between emails (Safety Drip)
                 print(f"Waiting {delay} seconds for next lead to avoid spam flags...", flush=True)
                 time.sleep(delay)

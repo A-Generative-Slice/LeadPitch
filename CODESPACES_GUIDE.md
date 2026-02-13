@@ -49,7 +49,7 @@ You can run this entire system without spending a cent!
     - `google/gemini-2.0-flash-exp:free` (Fast & High Quality)
     - `openrouter/free` (Auto-routes to the best available free model)
 2.  **Gmail is Free**: Just use a standard Gmail account with an **App Password**.
-3.  **Efficiency**: The bot is already configured to be "gentle" on free tiers by processing leads with 20-second delays and a 10-minute scheduler.
+3.  **Efficiency**: The bot is now configured as a **10-minute scheduler** on GitHub Actions, sending exactly one email per run to stay well within Gmail's safety limits.
 
 ---
 *Powered by the cloud, tuned for results.* 🦅🔥
