@@ -12,7 +12,7 @@ GitHub handles your keys securely. You need to add these for the outreach to wor
     - `SMTP_EMAIL`: Your Gmail address (e.g., `agenerativeslice@gmail.com`).
     - `SMTP_PASSWORD`: Your 16-character [Google App Password](https://myaccount.google.com/apppasswords).
     - `COMPANY_NAME`: Your business name (e.g., `"A Generative Slice"`).
-    - `OPENROUTER_MODEL`: Use `google/gemini-2.0-flash-001` for best results.
+    - `OPENROUTER_MODEL`: Use `openrouter/free` to always stay on the free tier.
 
 > [!TIP]
 > **Protip**: If you also want to use **Codespaces**, add these same secrets under **Settings -> Secrets and variables -> Codespaces** as well.
