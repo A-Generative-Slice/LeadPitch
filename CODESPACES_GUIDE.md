@@ -42,5 +42,14 @@ If you want to run the script manually to test or debug:
 - **Token Limits**: The AI is currently capped at **1000 tokens** per request to save on your API credits.
 - **Auto-Sync**: The system automatically commits `clients.csv` changes with the tag `[skip ci]` to prevent infinite loops.
 
+## 🆓 4. How to Run LeadPitch for FREE
+You can run this entire system without spending a cent!
+
+1.  **Use Free Models**: In your secrets, set `OPENROUTER_MODEL` to:
+    - `google/gemini-2.0-flash-exp:free` (Fast & High Quality)
+    - `openrouter/free` (Auto-routes to the best available free model)
+2.  **Gmail is Free**: Just use a standard Gmail account with an **App Password**.
+3.  **Efficiency**: The bot is already configured to be "gentle" on free tiers by processing leads with 20-second delays and a 10-minute scheduler.
+
 ---
 *Powered by the cloud, tuned for results.* 🦅🔥
