@@ -16,7 +16,7 @@ class PitchAgent:
                 base_url="https://openrouter.ai/api/v1",
                 api_key=api_key
             )
-        self.model = os.getenv("OPENROUTER_MODEL", "google/gemini-2.0-flash-001")
+        self.model = os.getenv("OPENROUTER_MODEL", "openrouter/free")
         self.company_name = os.getenv("COMPANY_NAME", "Generative Slice")
 
     def generate_pitch(self, client_data):
