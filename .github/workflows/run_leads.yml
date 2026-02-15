@@ -2,17 +2,21 @@ name: 🦅 LeadPitch Autopilot
 
 on:
   schedule:
-    - cron: '*/10 * * * *' # Run every 10 minutes
+    - cron: '*/15 * * * *' # Run every 15 minutes (GitHub minimum reliable interval)
   push:
     branches: [ main ]
     paths-ignore:
       - 'clients.csv'
   workflow_dispatch:
 
+# Prevent overlapping runs — if a previous run is still going, skip this one
+concurrency:
+  group: leadpitch-outreach
+  cancel-in-progress: false
+
 jobs:
   outreach:
     runs-on: ubuntu-latest
-    # Give the action permission to write back to the repo if needed
     permissions:
       contents: write
       issues: write
@@ -20,6 +24,8 @@ jobs:
     steps:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: 🐍 Setup Python
       uses: actions/setup-python@v5
@@ -39,7 +45,7 @@ jobs:
         if [ -z "${{ secrets.SMTP_PASSWORD }}" ]; then echo "❌ Missing SMTP_PASSWORD"; else echo "✅ SMTP_PASSWORD found"; fi
         if [ -z "${{ secrets.SMTP_EMAIL }}" ]; then echo "❌ Missing SMTP_EMAIL"; else echo "✅ SMTP_EMAIL found"; fi
 
-    - name: 🚀 Run Outreach (Drip Mode)
+    - name: 🚀 Run Outreach (Drip Mode - 1 email per run)
       env:
         OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         OPENROUTER_MODEL: ${{ secrets.OPENROUTER_MODEL }}
@@ -49,12 +55,3 @@ jobs:
         COMPANY_NAME: ${{ secrets.COMPANY_NAME }}
       run: |
         python3 main.py
-
-    - name: 💾 Commit & Push Changes
-      if: always() # Run even if outreach fails mid-way
-      run: |
-        git config --global user.name "LeadPitch Bot"
-        git config --global user.email "bot@leadpitch.ai"
-        git add clients.csv
-        git commit -m "Cloud Update: Syncing sent status [skip ci]" || echo "No changes to commit"
-        git push origin main

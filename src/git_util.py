@@ -27,7 +27,9 @@ def sync_csv_to_github(csv_path):
         return False
 
     try:
-        url = f"https://api.github.com/repos/{username}/{repo_name}/contents/{csv_path}"
+        # Use basename for the GitHub API path (e.g., "clients.csv", not a full local path)
+        file_name = os.path.basename(csv_path)
+        url = f"https://api.github.com/repos/{username}/{repo_name}/contents/{file_name}"
         headers = {
             "Authorization": f"token {github_token}",
             "Accept": "application/vnd.github.v3+json"
@@ -35,7 +37,7 @@ def sync_csv_to_github(csv_path):
         
         get_response = requests.get(url, headers=headers)
         if get_response.status_code != 200:
-            print(f"DEBUG: Failed to fetch file info for {csv_path}: {get_response.status_code}", flush=True)
+            print(f"DEBUG: Failed to fetch file info for {file_name}: {get_response.status_code}", flush=True)
             return False
         
         file_data = get_response.json()
@@ -54,7 +56,7 @@ def sync_csv_to_github(csv_path):
         
         put_response = requests.put(url, headers=headers, json=put_data)
         if put_response.status_code in [200, 201]:
-            print(f"✅ Real-time sync: {csv_path} updated on GitHub.", flush=True)
+            print(f"✅ Real-time sync: {file_name} updated on GitHub.", flush=True)
             return True
         else:
             print(f"❌ API Sync Failed ({put_response.status_code}): {put_response.text}", flush=True)

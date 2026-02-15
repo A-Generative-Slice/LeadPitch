@@ -1,6 +1,7 @@
 import argparse
 import time
 import os
+import sys
 import threading
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -21,7 +22,7 @@ def handle_exit(signum, frame):
 # Register exit handlers
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
-atexit.register(lambda: send_github_notification("OFFLINE"))
+# atexit removed — only send notification on unexpected kills, not normal exits
 
 @app.route("/")
 def health_check():

@@ -22,11 +22,13 @@ class Mailer:
     def send_email(self, to_email, subject, body):
         """
         Sends an email using yagmail.
+        Returns (success: bool, fatal: bool).
+        fatal=True means Gmail daily limit hit — caller should stop all sends.
         """
         if not self.yag:
             print(f"Skipping email to {to_email} (SMTP not configured or failed)")
             self._log_pitch(to_email, subject, body)
-            return False
+            return False, False
 
         try:
             self.yag.send(
@@ -35,11 +37,15 @@ class Mailer:
                 contents=body
             )
             print(f"Email successfully sent to {to_email}")
-            return True
+            return True, False
         except Exception as e:
+            error_str = str(e)
             print(f"Error sending email to {to_email}: {e}")
             self._log_pitch(to_email, subject, body)
-            return False
+            # Detect Gmail daily limit (550 5.4.5)
+            if '5.4.5' in error_str or 'Daily user sending limit' in error_str:
+                return False, True  # Fatal — stop all sends
+            return False, False
 
     def _log_pitch(self, to_email, subject, body):
         """Logs the pitch to a file if email sending is skipped."""

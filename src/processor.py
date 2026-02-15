@@ -49,7 +49,7 @@ class LeadProcessor:
             client_name = row.get('Client Name', 'Valued Partner')
             client_email = row.get('Email ID')
 
-            if not client_email:
+            if not client_email or str(client_email).strip() == '' or str(client_email).strip().lower() == 'nan':
                 print(f"Skipping lead at index {index}: No email provided for {client_name}", flush=True)
                 df.at[index, 'Sent Status'] = 'Invalid Email'
                 df.to_csv(self.csv_path, index=False)
@@ -59,17 +59,24 @@ class LeadProcessor:
             subject, body = self.agent.generate_pitch(row.to_dict())
 
             if not subject or not body:
-                print(f"Failed to generate pitch for {client_name}. Skipping...", flush=True)
+                print(f"Failed to generate pitch for {client_name}. Marking as failed.", flush=True)
+                df.at[index, 'Sent Status'] = 'Pitch Failed'
+                df.to_csv(self.csv_path, index=False)
                 continue
 
             if dry_run:
                 print(f"--- DRY RUN: Pitch for {client_name} ---", flush=True)
                 df.at[index, 'Sent Status'] = 'Dry Run Verified'
             else:
-                success = self.mailer.send_email(client_email, subject, body)
+                success, fatal = self.mailer.send_email(client_email, subject, body)
                 if success:
                     df.at[index, 'Sent Status'] = 'Yes'
                     df.at[index, 'Sent Time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                elif fatal:
+                    print("🛑 FATAL: Gmail daily limit reached. Stopping all sends for today.", flush=True)
+                    df.to_csv(self.csv_path, index=False)
+                    sync_csv_to_github(self.csv_path)
+                    return
 
             # Save progress locally
             df.to_csv(self.csv_path, index=False)
