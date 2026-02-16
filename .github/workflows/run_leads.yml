@@ -2,7 +2,7 @@ name: 🦅 LeadPitch Autopilot
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # Run every 15 minutes (GitHub minimum reliable interval)
+    - cron: '*/5 * * * *' # Run every 5 minutes (GitHub adds ~5-20 min natural delay)
   push:
     branches: [ main ]
     paths-ignore:
