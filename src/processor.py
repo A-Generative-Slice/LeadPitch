@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from src.agent import PitchAgent
 from src.mailer import Mailer
 from src.git_util import sync_csv_to_github
@@ -70,8 +70,9 @@ class LeadProcessor:
             else:
                 success, fatal = self.mailer.send_email(client_email, subject, body)
                 if success:
+                    IST = timezone(timedelta(hours=5, minutes=30))
                     df.at[index, 'Sent Status'] = 'Yes'
-                    df.at[index, 'Sent Time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    df.at[index, 'Sent Time'] = datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S')
                 elif fatal:
                     print("🛑 FATAL: Gmail daily limit reached. Stopping all sends for today.", flush=True)
                     df.to_csv(self.csv_path, index=False)

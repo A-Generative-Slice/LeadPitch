@@ -1,7 +1,7 @@
 import os
 import base64
 import requests
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -46,7 +46,8 @@ def sync_csv_to_github(csv_path):
         with open(csv_path, "rb") as f:
             content = base64.b64encode(f.read()).decode("utf-8")
 
-        commit_message = f"Cloud Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [skip ci]"
+        IST = timezone(timedelta(hours=5, minutes=30))
+        commit_message = f"Cloud Update: {datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S')} [skip ci]"
         put_data = {
             "message": commit_message,
             "content": content,
@@ -83,7 +84,8 @@ def send_github_notification(status="OFFLINE"):
     }
     
     title = f"🔴 LeadPitch Status: {status}"
-    body = f"Alert: The LeadPitch automation process has entered state: {status}.\nTime: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    IST = timezone(timedelta(hours=5, minutes=30))
+    body = f"Alert: The LeadPitch automation process has entered state: {status}.\nTime: {datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S')} IST"
     
     data = {"title": title, "body": body}
     try:
