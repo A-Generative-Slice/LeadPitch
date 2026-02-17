@@ -5,6 +5,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class PitchAgent:
+    # Fallback chain of free OpenRouter models (tried in order)
+    FREE_FALLBACK_MODELS = [
+        "google/gemini-2.0-flash-001",
+        "meta-llama/llama-3.3-8b-instruct:free",
+        "qwen/qwen3-8b:free",
+        "mistralai/mistral-small-3.1-24b-instruct:free",
+        "google/gemma-3-4b-it:free",
+    ]
+
     def __init__(self):
         # OpenRouter uses the OpenAI SDK with a custom base URL
         api_key = os.getenv("OPENROUTER_API_KEY")
@@ -16,7 +25,7 @@ class PitchAgent:
                 base_url="https://openrouter.ai/api/v1",
                 api_key=api_key
             )
-        self.model = os.getenv("OPENROUTER_MODEL", "openrouter/free")
+        self.primary_model = os.getenv("OPENROUTER_MODEL", "google/gemini-2.0-flash-001")
         self.company_name = os.getenv("COMPANY_NAME", "Generative Slice")
 
     def generate_pitch(self, client_data):
@@ -70,22 +79,24 @@ class PitchAgent:
         [Write the actual email body here]
         """
 
-        # Initial token budget
+        # Build the model fallback chain: primary first, then free alternatives
         import time as _time
-        current_max_tokens = 400
-        attempts = 0
-        max_attempts = 3
-        
-        while attempts < max_attempts:
+        models_to_try = [self.primary_model]
+        for m in self.FREE_FALLBACK_MODELS:
+            if m != self.primary_model:
+                models_to_try.append(m)
+
+        for model in models_to_try:
             try:
+                print(f"   🔄 Trying model: {model}", flush=True)
                 response = self.client.chat.completions.create(
-                    model=self.model,
+                    model=model,
                     messages=[
                         {"role": "system", "content": "You are a professional B2B outreach expert. You write clean, plain-text style emails without ANY markdown symbols or placeholders. Everything you output must be the final text."},
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.7,
-                    max_tokens=current_max_tokens
+                    max_tokens=400
                 )
                 content = response.choices[0].message.content.strip()
                 
@@ -106,32 +117,13 @@ class PitchAgent:
                 for p in placeholders:
                     body = body.replace(p, "Mohammad Hussain" if "Name" in p else "93441 15330")
 
+                print(f"   ✅ Pitch generated via {model}", flush=True)
                 return subject, body
 
             except Exception as e:
-                error_str = str(e)
-                attempts += 1
-                if "402" in error_str:
-                    # Try to extract the affordable token count from the error message if possible
-                    import re
-                    match = re.search(r"can only afford (\d+)", error_str)
-                    if match:
-                        affordable = int(match.group(1))
-                        current_max_tokens = max(50, affordable - 50)
-                    else:
-                        current_max_tokens //= 2
-                    
-                    print(f"⚠️ Low Credits (402): Retrying {company_name_lead} with {current_max_tokens} tokens...", flush=True)
-                    if current_max_tokens < 50:
-                        print(f"❌ Credits too low even for minimal pitch. Please top up: https://openrouter.ai/settings/credits", flush=True)
-                        break
-                else:
-                    # Transient errors (429 rate limit, 503 overload, timeouts)
-                    print(f"⚠️ API error for {company_name_lead} (attempt {attempts}/{max_attempts}): {e}", flush=True)
-                    if attempts < max_attempts:
-                        print(f"   Retrying in 10 seconds...", flush=True)
-                        _time.sleep(10)
-                    else:
-                        print(f"❌ All {max_attempts} attempts failed for {company_name_lead}.", flush=True)
-        
+                print(f"   ⚠️ {model} failed: {e}", flush=True)
+                _time.sleep(5)  # Brief pause before trying next model
+                continue
+
+        print(f"❌ All models failed for {company_name_lead}.", flush=True)
         return None, None
