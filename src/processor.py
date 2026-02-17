@@ -44,7 +44,7 @@ class LeadProcessor:
             print("No new leads to process. Check if 'Sent Status' column is correctly set to 'No' in your CSV.", flush=True)
             return
 
-        batch_size = int(os.getenv("BATCH_SIZE", "3"))
+        batch_size = int(os.getenv("BATCH_SIZE", "10"))
         leads_to_process = unsent_leads.iloc[:batch_size] if all_leads else unsent_leads.iloc[:1]
         
         for index, row in leads_to_process.iterrows():
