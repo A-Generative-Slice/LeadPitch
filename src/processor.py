@@ -5,11 +5,23 @@ from src.agent import PitchAgent
 from src.mailer import Mailer
 from src.git_util import sync_csv_to_github
 
+DAILY_EMAIL_CAP = int(os.getenv("DAILY_EMAIL_CAP", "450"))
+
 class LeadProcessor:
     def __init__(self, csv_path):
         self.csv_path = csv_path
         self.agent = PitchAgent()
         self.mailer = Mailer()
+
+    def _emails_sent_today(self, df):
+        """Count how many emails were already sent today (IST)."""
+        IST = timezone(timedelta(hours=5, minutes=30))
+        today_str = datetime.now(IST).strftime('%Y-%m-%d')
+        sent_today = 0
+        for val in df['Sent Time']:
+            if isinstance(val, str) and val.startswith(today_str):
+                sent_today += 1
+        return sent_today
 
     def process_leads(self, dry_run=False, all_leads=False):
         """
@@ -32,6 +44,15 @@ class LeadProcessor:
         else:
             df['Sent Time'] = df['Sent Time'].astype(object).fillna('')
 
+        # --- Daily cap check ---
+        sent_today = self._emails_sent_today(df)
+        remaining_today = DAILY_EMAIL_CAP - sent_today
+        print(f"📊 Daily cap: {sent_today}/{DAILY_EMAIL_CAP} emails sent today.", flush=True)
+
+        if remaining_today <= 0:
+            print(f"🛑 Daily cap of {DAILY_EMAIL_CAP} reached. Resuming automatically tomorrow.", flush=True)
+            return
+
         unsent_leads = df[df['Sent Status'].isin(['No', 'Pitch Failed'])]
         
         print(f"DEBUG: Found {len(df)} total rows in CSV.", flush=True)
@@ -44,7 +65,7 @@ class LeadProcessor:
             print("No new leads to process. Check if 'Sent Status' column is correctly set to 'No' in your CSV.", flush=True)
             return
 
-        batch_size = int(os.getenv("BATCH_SIZE", "10"))
+        batch_size = min(int(os.getenv("BATCH_SIZE", "15")), remaining_today)
         leads_to_process = unsent_leads.iloc[:batch_size] if all_leads else unsent_leads.iloc[:1]
         
         for index, row in leads_to_process.iterrows():
