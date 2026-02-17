@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from datetime import datetime, timezone, timedelta
 from src.agent import PitchAgent
@@ -43,7 +44,8 @@ class LeadProcessor:
             print("No new leads to process. Check if 'Sent Status' column is correctly set to 'No' in your CSV.", flush=True)
             return
 
-        leads_to_process = unsent_leads if all_leads else unsent_leads.iloc[:1]
+        batch_size = int(os.getenv("BATCH_SIZE", "3"))
+        leads_to_process = unsent_leads.iloc[:batch_size] if all_leads else unsent_leads.iloc[:1]
         
         for index, row in leads_to_process.iterrows():
             client_name = row.get('Client Name', 'Valued Partner')
@@ -88,6 +90,6 @@ class LeadProcessor:
                 sync_csv_to_github(self.csv_path)
 
             if all_leads and index != leads_to_process.index[-1]:
-                delay = 600 # 10 minute gap between emails (Safety Drip)
+                delay = 120 # 2-min gap between emails (batch mode in Actions)
                 print(f"Waiting {delay} seconds for next lead to avoid spam flags...", flush=True)
                 time.sleep(delay)
