@@ -71,6 +71,7 @@ class PitchAgent:
         """
 
         # Initial token budget
+        import time as _time
         current_max_tokens = 400
         attempts = 0
         max_attempts = 3
@@ -109,25 +110,28 @@ class PitchAgent:
 
             except Exception as e:
                 error_str = str(e)
+                attempts += 1
                 if "402" in error_str:
-                    attempts += 1
                     # Try to extract the affordable token count from the error message if possible
-                    # Example: "you requested up to 1000 tokens, but can only afford 672"
                     import re
                     match = re.search(r"can only afford (\d+)", error_str)
                     if match:
                         affordable = int(match.group(1))
-                        # Set to affordable - 50 for safety margin
                         current_max_tokens = max(50, affordable - 50)
                     else:
-                        current_max_tokens //= 2 # Aggressive reduction
+                        current_max_tokens //= 2
                     
                     print(f"⚠️ Low Credits (402): Retrying {company_name_lead} with {current_max_tokens} tokens...", flush=True)
                     if current_max_tokens < 50:
                         print(f"❌ Credits too low even for minimal pitch. Please top up: https://openrouter.ai/settings/credits", flush=True)
                         break
                 else:
-                    print(f"Error generating pitch for {company_name_lead}: {e}")
-                    break
+                    # Transient errors (429 rate limit, 503 overload, timeouts)
+                    print(f"⚠️ API error for {company_name_lead} (attempt {attempts}/{max_attempts}): {e}", flush=True)
+                    if attempts < max_attempts:
+                        print(f"   Retrying in 10 seconds...", flush=True)
+                        _time.sleep(10)
+                    else:
+                        print(f"❌ All {max_attempts} attempts failed for {company_name_lead}.", flush=True)
         
         return None, None

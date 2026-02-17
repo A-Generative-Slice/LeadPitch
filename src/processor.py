@@ -32,10 +32,10 @@ class LeadProcessor:
         else:
             df['Sent Time'] = df['Sent Time'].astype(object).fillna('')
 
-        unsent_leads = df[df['Sent Status'] == 'No']
+        unsent_leads = df[df['Sent Status'].isin(['No', 'Pitch Failed'])]
         
         print(f"DEBUG: Found {len(df)} total rows in CSV.", flush=True)
-        print(f"DEBUG: Found {len(unsent_leads)} leads with 'Sent Status' == 'No'.", flush=True)
+        print(f"DEBUG: Found {len(unsent_leads)} leads pending (No + Pitch Failed retries).", flush=True)
         
         if not unsent_leads.empty:
             print(f"DEBUG: First lead in queue: {unsent_leads.iloc[0].get('Client Name')} ({unsent_leads.iloc[0].get('Email ID')})", flush=True)
