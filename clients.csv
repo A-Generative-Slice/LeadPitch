@@ -349,9 +349,9 @@ Sheraton Grand,reservations.chennai@sheraton.com,,ECR / Hospitality,Hospitality,
 Taj Fisherman's Cove,fishcove.chennai@tajhotels.com,,Kovalam / Hospitality,Hospitality,Experience booking manual.,Experience Booking Module,Yes,2026-02-22 02:02:35
 Hablis Hotel,reservations@hablis.com,,Guindy / Hospitality,Hospitality,Business traveler loyalty needed.,Corporate Loyalty Portal,Yes,2026-02-22 02:04:57
 The Raintree,mail@raintreehotels.com,,Anna Salai / Hospitality,Hospitality,Banquet availability check manual.,Banquet Availability Calendar,Yes,2026-02-22 02:07:18
-Savera Hotel,info@saverahotel.com,,Mylapore / Hospitality,Hospitality,Heritage story needs digital refresh.,Content & Brand Refresh,No,
-New Woodlands,contact@newwoodlands.in,,Mylapore / Hospitality,Hospitality,Room service is phone-based.,QR Code Room Service,No,
-Hotel Palmgrove,reservations@palmgrovehotel.com,,Nungambakkam / Hospitality,Hospitality,Direct booking conversion low.,Booking Engine CRO,No,
+Savera Hotel,info@saverahotel.com,,Mylapore / Hospitality,Hospitality,Heritage story needs digital refresh.,Content & Brand Refresh,Pitch Failed,
+New Woodlands,contact@newwoodlands.in,,Mylapore / Hospitality,Hospitality,Room service is phone-based.,QR Code Room Service,Pitch Failed,
+Hotel Palmgrove,reservations@palmgrovehotel.com,,Nungambakkam / Hospitality,Hospitality,Direct booking conversion low.,Booking Engine CRO,Yes,2026-02-22 02:09:56
 Grand Sweets,orders@grandsweets.com,,Adyar / Food,Food,Global shipping calc complex.,International Shipping Calculator,No,
 Sri Krishna Sweets,customercare@srikrishnasweets.com,,T. Nagar / Food,Food,Corporate bulk orders manual.,Bulk Ordering Portal,No,
 A2B,admin@a2b.in,,Adyar / Food,Food,Delivery reconciliation hard.,Aggregator Reconciliation Tool,No,
