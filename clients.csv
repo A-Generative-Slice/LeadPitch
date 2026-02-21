@@ -299,7 +299,7 @@ Spinta Digital,hello@spintadigital.com,,OMR / Agency,Agency,Dev partners for US/
 Synergy Maritime,info@synergymaritime.com,,Thoraipakkam / Logistics,Logistics,Crew docs are physical/manual.,Document Parsing Automation,Yes,2026-02-19 23:55:28
 Indev Logistics,info@indevlogistics.com,,Redhills / Logistics,Logistics,Truck fleet tracking is phone-based.,Fleet Tracking Dashboard,Yes,2026-02-19 23:57:34
 Sical Logistics,clearing@sical.com,,Parrys / Logistics,Logistics,Customs updates to clients are slow.,Automated Status Notification,Yes,2026-02-19 23:59:48
-Holisol Logistics,solutions@holisollogistics.com,,Guindy / Logistics,Logistics,Inventory updates aren't real-time.,Client Inventory Portal,Pitch Failed,
+Holisol Logistics,solutions@holisollogistics.com,,Guindy / Logistics,Logistics,Inventory updates aren't real-time.,Client Inventory Portal,Yes,2026-02-22 01:36:38
 Snowman Logistics,info@snowman.in,,Madhavaram / Cold Chain,Cold Chain,Temp alerts need to be digital/SMS.,IoT Alert Dashboard,Yes,2026-02-20 00:02:29
 TVS Logistics (SME),contact@tvslsl.com,,Guindy / Logistics,Logistics,Vendor onboarding is slow.,Vendor Onboarding Automation,Yes,2026-02-20 00:40:21
 Flyjac Logistics,info@flyjac.com,,Guindy / Logistics,Logistics,Freight quotes take too long.,Instant Quote Calculator,Yes,2026-02-20 00:42:32
@@ -344,13 +344,13 @@ Chariot Beach Resort,reservations@chariotbeachresort.com,,Mahabalipuram / Hospit
 Radisson Blu Temple Bay,reservations@rdtemplebay.com,,Mamallapuram / Hospitality,Hospitality,Corporate retreat B2B nurturing.,B2B Email Automation,Yes,2026-02-22 01:16:37
 InterContinental,info@intercontinental.com,,Nemmeli / Hospitality,Hospitality,Spa booking manual.,Resort Service Booking App,Yes,2026-02-22 01:18:57
 VGP Golden Beach,enquiry@vgpresort.com,,ECR / Resort,Resort,Day-out booking UX poor.,Booking Engine Optimization,Yes,2026-02-22 01:22:54
-Ideal Beach Resort,reservations@idealresort.com,,Mahabalipuram / Resort,Resort,Old website design.,Website Modernization,Yes,2026-02-22 01:25:04
-Sheraton Grand,reservations.chennai@sheraton.com,,ECR / Hospitality,Hospitality,Dining booking for non-guests.,Dining Reservation System,Pitch Failed,
-Taj Fisherman's Cove,fishcove.chennai@tajhotels.com,,Kovalam / Hospitality,Hospitality,Experience booking manual.,Experience Booking Module,Yes,2026-02-22 01:27:24
-Hablis Hotel,reservations@hablis.com,,Guindy / Hospitality,Hospitality,Business traveler loyalty needed.,Corporate Loyalty Portal,Yes,2026-02-22 01:29:32
-The Raintree,mail@raintreehotels.com,,Anna Salai / Hospitality,Hospitality,Banquet availability check manual.,Banquet Availability Calendar,Pitch Failed,
-Savera Hotel,info@saverahotel.com,,Mylapore / Hospitality,Hospitality,Heritage story needs digital refresh.,Content & Brand Refresh,Yes,2026-02-22 01:31:49
-New Woodlands,contact@newwoodlands.in,,Mylapore / Hospitality,Hospitality,Room service is phone-based.,QR Code Room Service,Yes,2026-02-22 01:33:57
+Ideal Beach Resort,reservations@idealresort.com,,Mahabalipuram / Resort,Resort,Old website design.,Website Modernization,No,
+Sheraton Grand,reservations.chennai@sheraton.com,,ECR / Hospitality,Hospitality,Dining booking for non-guests.,Dining Reservation System,No,
+Taj Fisherman's Cove,fishcove.chennai@tajhotels.com,,Kovalam / Hospitality,Hospitality,Experience booking manual.,Experience Booking Module,No,
+Hablis Hotel,reservations@hablis.com,,Guindy / Hospitality,Hospitality,Business traveler loyalty needed.,Corporate Loyalty Portal,No,
+The Raintree,mail@raintreehotels.com,,Anna Salai / Hospitality,Hospitality,Banquet availability check manual.,Banquet Availability Calendar,No,
+Savera Hotel,info@saverahotel.com,,Mylapore / Hospitality,Hospitality,Heritage story needs digital refresh.,Content & Brand Refresh,No,
+New Woodlands,contact@newwoodlands.in,,Mylapore / Hospitality,Hospitality,Room service is phone-based.,QR Code Room Service,No,
 Hotel Palmgrove,reservations@palmgrovehotel.com,,Nungambakkam / Hospitality,Hospitality,Direct booking conversion low.,Booking Engine CRO,No,
 Grand Sweets,orders@grandsweets.com,,Adyar / Food,Food,Global shipping calc complex.,International Shipping Calculator,No,
 Sri Krishna Sweets,customercare@srikrishnasweets.com,,T. Nagar / Food,Food,Corporate bulk orders manual.,Bulk Ordering Portal,No,
