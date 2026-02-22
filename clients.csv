@@ -362,7 +362,7 @@ Old Madras Baking,orders@ombc.in,,Alwarpet / Bakery,Bakery,Bread subscription ma
 Winners Bakery,info@winnersbakery.com,,Alwarpet / Bakery,Bakery,Class registration manual.,Workshop Booking System,Yes,2026-02-22 02:53:06
 Fresh Baked Goodness,hello@freshbakedgoodness.com,,Mylapore / Bakery,Bakery,Instagram-only business.,First Website Build,Yes,2026-02-22 03:09:30
 Terra Earth Food,terraearthfood@gmail.com,,Neelankarai / Organic,Organic,Menu updates via email.,Automated Weekly Menu Update,Yes,2026-02-22 02:41:12
-Gormei Market,info@gormei.com,,Alwarpet / Retail,Retail,Product discovery pool.,Curated Product Discovery Engine,Pitch Failed,
+Gormei Market,info@gormei.com,,Alwarpet / Retail,Retail,Product discovery pool.,Curated Product Discovery Engine,Yes,2026-02-23 02:36:20
 Amma Naana,contact@ammanaana.com,,Alwarpet / Retail,Retail,Expat requests manual.,Product Request Portal,Yes,2026-02-22 03:11:40
 Wait Rose,orders@waitrose.in,,Adyar / Retail,Retail,WhatsApp ordering chaotic.,WhatsApp-to-Web Order Tool,Yes,2026-02-22 02:55:40
 Brown Tree,info@browntree.in,,Nungambakkam / Retail,Retail,Hamper customization manual.,Hamper Builder Web Tool,Yes,2026-02-22 02:57:50
@@ -378,11 +378,11 @@ Nokia Solutions,networks.india@nokia.com,,Oragadam / Telecom,Telecom,Safety trai
 Daimler India,dicv-recruit@daimler.com,,Oragadam / Auto,Auto,Dealer training physical.,Dealer Training Portal,Yes,2026-02-23 02:23:36
 Apollo Tyres Mfg,info@apollotyres.com,,Oragadam / Mfg,Mfg,Waste tracking manual.,Waste Management Dashboard,Yes,2026-02-23 02:25:45
 Royal Enfield Plant,plantvisits@royalenfield.com,,Oragadam / Auto,Auto,Factory tour bookings.,Tour Booking System,Yes,2026-02-23 02:27:59
-Komatsu India,info@komatsu.in,,Oragadam / Mfg,Mfg,Spare parts catalog.,Digital Parts Catalog,Pitch Failed,
-Allison Transmission,info@allisontransmission.com,,Oragadam / Mfg,Mfg,Support tickets email-based.,Support Ticket System,Yes,2026-02-23 02:30:25
-Danfoss India,climatesolutions@danfoss.com,,Oragadam / Mfg,Mfg,Energy reporting for clients.,Client Reporting Dashboard,Pitch Failed,
-Gamesa Renewable,info@siemensgamesa.com,,Mamandur / Energy,Energy,Maintenance scheduling.,Maintenance Scheduling App,Yes,2026-02-23 02:33:25
-Vestas India,vestas-india@vestas.com,,Sholinganallur / Energy,Energy,Turbine data viz.,Data Visualization Dashboard,Yes,2026-02-23 02:35:36
+Komatsu India,info@komatsu.in,,Oragadam / Mfg,Mfg,Spare parts catalog.,Digital Parts Catalog,No,
+Allison Transmission,info@allisontransmission.com,,Oragadam / Mfg,Mfg,Support tickets email-based.,Support Ticket System,No,
+Danfoss India,climatesolutions@danfoss.com,,Oragadam / Mfg,Mfg,Energy reporting for clients.,Client Reporting Dashboard,No,
+Gamesa Renewable,info@siemensgamesa.com,,Mamandur / Energy,Energy,Maintenance scheduling.,Maintenance Scheduling App,No,
+Vestas India,vestas-india@vestas.com,,Sholinganallur / Energy,Energy,Turbine data viz.,Data Visualization Dashboard,No,
 Grundfos Pumps,service-india@grundfos.com,,Thoraipakkam / Mfg,Mfg,Service history access.,Service History Portal,No,
 Caterpillar India,cat_india@cat.com,,Thiruvallur / Mfg,Mfg,Dealer inventory sharing.,Dealer Network Inventory,No,
 Hindustan Motors,hm-finance@hindmotor.com,,Tiruvallur / Auto,Auto,Legacy migration needed.,Legacy System Modernization,No,
