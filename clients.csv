@@ -383,9 +383,9 @@ Allison Transmission,info@allisontransmission.com,,Oragadam / Mfg,Mfg,Support ti
 Danfoss India,climatesolutions@danfoss.com,,Oragadam / Mfg,Mfg,Energy reporting for clients.,Client Reporting Dashboard,Yes,2026-02-24 02:41:20
 Gamesa Renewable,info@siemensgamesa.com,,Mamandur / Energy,Energy,Maintenance scheduling.,Maintenance Scheduling App,Yes,2026-02-24 02:43:35
 Vestas India,vestas-india@vestas.com,,Sholinganallur / Energy,Energy,Turbine data viz.,Data Visualization Dashboard,Yes,2026-02-24 02:45:54
-Grundfos Pumps,service-india@grundfos.com,,Thoraipakkam / Mfg,Mfg,Service history access.,Service History Portal,No,
-Caterpillar India,cat_india@cat.com,,Thiruvallur / Mfg,Mfg,Dealer inventory sharing.,Dealer Network Inventory,No,
-Hindustan Motors,hm-finance@hindmotor.com,,Tiruvallur / Auto,Auto,Legacy migration needed.,Legacy System Modernization,No,
+Grundfos Pumps,service-india@grundfos.com,,Thoraipakkam / Mfg,Mfg,Service history access.,Service History Portal,Pitch Failed,
+Caterpillar India,cat_india@cat.com,,Thiruvallur / Mfg,Mfg,Dealer inventory sharing.,Dealer Network Inventory,Pitch Failed,
+Hindustan Motors,hm-finance@hindmotor.com,,Tiruvallur / Auto,Auto,Legacy migration needed.,Legacy System Modernization,Yes,2026-02-24 02:48:27
 PCA Automobiles,info@citroen.in,,Tiruvallur / Auto,Auto,Test drive booking.,Test Drive Booking App,No,
 Mitsubishi Electric,mei-india@mitsubishielectric.com,,Gummidipoondi / Mfg,Mfg,Warranty claims slow.,Warranty Claim Portal,No,
 Kone Elevators,service.india@kone.com,,Ayanambakkam / Mfg,Mfg,Breakdown reporting.,IoT Breakdown Alert App,No,
