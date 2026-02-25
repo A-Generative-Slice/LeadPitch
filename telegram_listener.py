@@ -41,71 +41,69 @@ def get_updates(offset=None):
         print(f"Failed to get updates from Telegram: {e}")
         return None
 
-def read_offset():
-    try:
-        with open("offset.txt", "r") as f:
-            return int(f.read().strip())
-    except FileNotFoundError:
-        return None
-
-def write_offset(offset):
-    with open("offset.txt", "w") as f:
-        f.write(str(offset))
-
 def main():
-    print("LeadPitch Actions Listener triggered. Checking for new commands...")
+    print("LeadPitch Local Listener started. Polling for commands...")
+    offset = None
     
-    # 1. Ensure latest code from branch before doing anything
-    github_manager.pull_latest()
-    
-    offset = read_offset()
-    updates = get_updates(offset)
-    
-    if updates and updates.get("ok"):
-        for update in updates.get("result", []):
-            new_offset = update["update_id"] + 1
-            write_offset(new_offset)
+    while True:
+        try:
+            updates = get_updates(offset)
             
-            message = update.get("message", {})
-            chat_id = str(message.get("chat", {}).get("id", ""))
-            text = message.get("text", "")
+            if updates and updates.get("ok"):
+                for update in updates.get("result", []):
+                    offset = update["update_id"] + 1
+                    
+                    message = update.get("message", {})
+                    chat_id = str(message.get("chat", {}).get("id", ""))
+                    text = message.get("text", "")
+                    
+                    if chat_id != str(TELEGRAM_CHAT_ID):
+                        print(f"Unauthorized access attempt from chat ID: {chat_id}")
+                        continue
+                        
+                    if text and text.startswith("/prompt"):
+                        parts = text.split(" ", 2)
+                        if len(parts) < 3:
+                            send_telegram_msg("⚠️ Format error. Use: /prompt [number] [niche]")
+                            continue
+                            
+                        try:
+                            target_count = int(parts[1])
+                        except ValueError:
+                            send_telegram_msg("⚠️ Format error: count must be a number. Use: /prompt [number] [niche]")
+                            continue
+                            
+                        niche_query = parts[2].strip()
+                        
+                        send_telegram_msg(f"🎯 Target locked. Hunting for {target_count} leads in niche: {niche_query}.")
+                        
+                        github_manager.pull_latest()
+                        
+                        existing_emails = github_manager.load_existing_emails()
+                        print(f"Currently tracking {len(existing_emails)} existing emails.")
+                        
+                        final_leads_count = scraper_engine.process_target(
+                            niche_query, 
+                            existing_emails, 
+                            target_count, 
+                            send_telegram_msg
+                        )
+                        
+                        github_manager.push_updates(niche_query)
+                        
+                        # Send the actual CSV file directly to Telegram
+                        send_telegram_document("clients.csv")
+                        
+                        send_telegram_msg(f"✅ LeadPitch Complete. Final tally: {final_leads_count}/{target_count} leads for {niche_query}. CSV synced to GitHub and attached above.")
             
-            if chat_id != str(TELEGRAM_CHAT_ID):
-                print(f"Unauthorized access attempt from chat ID: {chat_id}")
-                continue
-                
-            if text and text.startswith("/prompt"):
-                parts = text.split(" ", 2)
-                if len(parts) < 3:
-                    send_telegram_msg("⚠️ Format error. Use: /prompt [number] [niche]")
-                    continue
-                    
-                try:
-                    target_count = int(parts[1])
-                except ValueError:
-                    send_telegram_msg("⚠️ Format error: count must be a number. Use: /prompt [number] [niche]")
-                    continue
-                    
-                niche_query = parts[2].strip()
-                
-                send_telegram_msg(f"🎯 GitHub Actions triggered! Hunting for {target_count} leads in niche: {niche_query}.")
-                
-                existing_emails = github_manager.load_existing_emails()
-                print(f"Currently tracking {len(existing_emails)} existing emails.")
-                
-                final_leads_count = scraper_engine.process_target(
-                    niche_query, 
-                    existing_emails, 
-                    target_count, 
-                    send_telegram_msg
-                )
-                
-                # We skip github_manager push here, the YAML action file will handle the final commit and push natively
-                send_telegram_document("clients.csv")
-                send_telegram_msg(f"✅ LeadPitch Complete. Final tally: {final_leads_count}/{target_count} enriched leads for {niche_query}. Attached CSV.")
-                
-    else:
-        print("No new updates found.")
+            time.sleep(2)
+            
+        except KeyboardInterrupt:
+            print("Shutting down LeadPitch listener.")
+            break
+        except Exception as e:
+            print(f"Unexpected error in polling loop: {e}")
+            time.sleep(5)
 
 if __name__ == "__main__":
     main()

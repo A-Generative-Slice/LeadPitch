@@ -133,7 +133,7 @@ def process_target(niche_query, existing_emails, target_count, telegram_callback
     
     with open(TARGET_CSV_FILE, 'a', encoding='utf-8') as f:
         if not file_exists or os.path.getsize(TARGET_CSV_FILE) == 0:
-            f.write("URL,Email,Description,Pain_Points,Solutions\n")
+            f.write("Client Name,Email ID,Contact Number,Source/Website Information,Theme of Business,Pain Points,Possible Solution,Sent Status,Sent Time\n")
             
         while new_leads_found < target_count and pages_searched < max_pages:
             print(f"Fetching page {pages_searched + 1} for niche: {niche_query}")
@@ -159,7 +159,8 @@ def process_target(niche_query, existing_emails, target_count, telegram_callback
                 if email:
                     if email not in existing_emails:
                         print(f"Found NEW data lead: {email} at {url}")
-                        f.write(f"{url},{email},{data['description']},{data['pain_points']},{data['solutions']}\n")
+                        client_name = url.split('//')[-1].split('/')[0] if '//' in url else url
+                        f.write(f"{client_name},{email},N/A,{url},{data['description']},{data['pain_points']},{data['solutions']},No,\n")
                         f.flush()
                         existing_emails.add(email)
                         new_leads_found += 1
