@@ -7,11 +7,11 @@ load_dotenv()
 class PitchAgent:
     # Fallback chain of free OpenRouter models (tried in order)
     FREE_FALLBACK_MODELS = [
-        "google/gemini-2.0-flash-001",
-        "meta-llama/llama-3.3-8b-instruct:free",
-        "qwen/qwen3-8b:free",
+        "meta-llama/llama-3.3-70b-instruct:free",
         "mistralai/mistral-small-3.1-24b-instruct:free",
-        "google/gemma-3-4b-it:free",
+        "google/gemma-3-27b-it:free",
+        "meta-llama/llama-3.2-3b-instruct:free",
+        "nousresearch/hermes-3-llama-3.1-405b:free",
     ]
 
     def __init__(self):
@@ -25,7 +25,7 @@ class PitchAgent:
                 base_url="https://openrouter.ai/api/v1",
                 api_key=api_key
             )
-        self.primary_model = os.getenv("OPENROUTER_MODEL", "google/gemini-2.0-flash-001")
+        self.primary_model = os.getenv("OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct:free")
         self.company_name = os.getenv("COMPANY_NAME", "Generative Slice")
 
     def generate_pitch(self, client_data):
