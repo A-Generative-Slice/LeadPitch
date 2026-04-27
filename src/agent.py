@@ -10,7 +10,7 @@ class PitchAgent:
         # primary: GitHub Models (using GITHUB_TOKEN)
         # fallback: OpenRouter (using OPENROUTER_API_KEY)
         
-        self.github_token = os.getenv("GITHUB_TOKEN")
+        self.github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
         self.openrouter_key = os.getenv("OPENROUTER_API_KEY")
         
         self.github_client = None
