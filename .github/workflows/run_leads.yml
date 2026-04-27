@@ -56,4 +56,4 @@ jobs:
         SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         COMPANY_NAME: ${{ secrets.COMPANY_NAME }}
       run: |
-        python3 main.py --all
+        python3 main.py
