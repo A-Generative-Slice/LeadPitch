@@ -48,6 +48,7 @@ jobs:
 
     - name: 🚀 Run Outreach (Drip Mode - 1 email per run)
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         OPENROUTER_MODEL: ${{ secrets.OPENROUTER_MODEL }}
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
