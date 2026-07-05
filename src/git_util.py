@@ -121,32 +121,3 @@ def clear_github_notifications():
             print("Cleared previous status notifications.", flush=True)
     except:
         pass
-
-def get_file_from_github(file_path):
-    """
-    Fetches a file's raw content from GitHub using the REST API.
-    """
-    github_token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
-    username, repo_name = _get_repo_info()
-    
-    if not github_token:
-        return None
-
-    try:
-        file_name = os.path.basename(file_path)
-        url = f"https://api.github.com/repos/{username}/{repo_name}/contents/{file_name}"
-        headers = {
-            "Authorization": f"token {github_token}",
-            "Accept": "application/vnd.github.v3+json"
-        }
-        
-        get_response = requests.get(url, headers=headers)
-        if get_response.status_code == 200:
-            data = get_response.json()
-            content_b64 = data.get('content', '')
-            if content_b64:
-                return base64.b64decode(content_b64).decode("utf-8")
-        return None
-    except Exception as e:
-        print(f"DEBUG: Error fetching {file_path} from GitHub: {e}", flush=True)
-        return None

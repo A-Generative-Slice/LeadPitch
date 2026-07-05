@@ -59,11 +59,9 @@ class LeadProcessor:
         
         if not unsent_leads.empty:
             print(f"DEBUG: First lead in queue: {unsent_leads.iloc[0].get('Client Name')} ({unsent_leads.iloc[0].get('Email ID')})", flush=True)
-            self._reset_database_exhausted_flag()
 
         if unsent_leads.empty:
             print("No new leads to process. Check if 'Sent Status' column is correctly set to 'No' in your CSV.", flush=True)
-            self._handle_database_exhausted()
             return
 
         batch_size = min(int(os.getenv("BATCH_SIZE", "15")), remaining_today)
@@ -115,94 +113,3 @@ class LeadProcessor:
                 delay = 120 # 2-min gap between emails (batch mode in Actions)
                 print(f"Waiting {delay} seconds for next lead to avoid spam flags...", flush=True)
                 time.sleep(delay)
-
-    def _handle_database_exhausted(self):
-        """Sends a notification email when there are no more unsent leads in the CSV."""
-        import json
-        from src.git_util import get_file_from_github, sync_csv_to_github
-        
-        status_file = "db_status.json"
-        already_sent = False
-        
-        # Try local first
-        if os.path.exists(status_file):
-            try:
-                with open(status_file, "r") as f:
-                    data = json.load(f)
-                    already_sent = data.get("exhausted_notification_sent", False)
-            except:
-                pass
-        
-        # If not local, try fetching from GitHub
-        if not already_sent:
-            github_content = get_file_from_github(status_file)
-            if github_content:
-                try:
-                    data = json.loads(github_content)
-                    already_sent = data.get("exhausted_notification_sent", False)
-                except:
-                    pass
-
-        if already_sent:
-            print("CSV Over notification already sent previously. Skipping to avoid spam.", flush=True)
-            return
-
-        # Send notification email
-        to_email = "s.m.d.hussainjoe@gmail.com"
-        subject = "LeadPitch Alert: Lead Database Exhausted"
-        body = """Hi Mohammad,
-
-All leads in clients.csv have been successfully processed. 
-The outreach automation is now paused until you add new leads to your CSV database.
-
-Best regards,
-LeadPitch Autopilot
-"""
-        print(f"Database exhausted. Sending notification email to {to_email}...", flush=True)
-        success, fatal = self.mailer.send_email(to_email, subject, body)
-        if success:
-            # Write status file locally
-            status_data = {"exhausted_notification_sent": True}
-            try:
-                with open(status_file, "w") as f:
-                    json.dump(status_data, f)
-                # Sync status file to GitHub so it persists across Action runs
-                sync_csv_to_github(status_file)
-                print("Logged and synced database exhausted status to GitHub.", flush=True)
-            except Exception as e:
-                print(f"Error saving database status: {e}", flush=True)
-
-    def _reset_database_exhausted_flag(self):
-        """Resets the exhausted notification flag when new leads are added."""
-        import json
-        from src.git_util import get_file_from_github, sync_csv_to_github
-        
-        status_file = "db_status.json"
-        already_sent = False
-        
-        if os.path.exists(status_file):
-            try:
-                with open(status_file, "r") as f:
-                    data = json.load(f)
-                    already_sent = data.get("exhausted_notification_sent", False)
-            except:
-                pass
-        
-        if not already_sent:
-            github_content = get_file_from_github(status_file)
-            if github_content:
-                try:
-                    data = json.loads(github_content)
-                    already_sent = data.get("exhausted_notification_sent", False)
-                except:
-                    pass
-                    
-        if already_sent:
-            print("New leads detected. Resetting database status flag on GitHub...", flush=True)
-            status_data = {"exhausted_notification_sent": False}
-            try:
-                with open(status_file, "w") as f:
-                    json.dump(status_data, f)
-                sync_csv_to_github(status_file)
-            except Exception as e:
-                print(f"Error resetting database status: {e}", flush=True)
