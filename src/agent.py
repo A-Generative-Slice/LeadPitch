@@ -7,12 +7,21 @@ load_dotenv()
 
 class PitchAgent:
     def __init__(self):
-        # primary: GitHub Models (using GITHUB_TOKEN)
-        # fallback: OpenRouter (using OPENROUTER_API_KEY)
+        # primary: Gemini API (using GEMINI_API_KEY)
+        # fallbacks: GitHub Models, OpenRouter
         
+        self.gemini_key = os.getenv("GEMINI_API_KEY")
         self.github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
         self.openrouter_key = os.getenv("OPENROUTER_API_KEY")
         
+        self.gemini_client = None
+        if self.gemini_key:
+            self.gemini_client = OpenAI(
+                base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+                api_key=self.gemini_key
+            )
+            print("✅ Gemini API initialized (using Google AI Studio).", flush=True)
+
         self.github_client = None
         if self.github_token:
             self.github_client = OpenAI(
@@ -28,6 +37,13 @@ class PitchAgent:
                 api_key=self.openrouter_key
             )
         
+        # Gemini Models (Primary)
+        self.gemini_models = [
+            "gemini-2.5-flash",
+            "gemini-3.5-flash",
+            "gemini-2.0-flash"
+        ]
+
         # GitHub Models availability (free for Student/Pro)
         self.github_models = [
             "gpt-4o-mini",
@@ -96,7 +112,26 @@ class PitchAgent:
         [Write the actual email body here]
         """
 
-        # Try GitHub Models first (Free for user)
+        # Try Gemini first (Primary)
+        if self.gemini_client:
+            for model in self.gemini_models:
+                try:
+                    print(f"   🔄 Trying Gemini Model: {model}", flush=True)
+                    response = self.gemini_client.chat.completions.create(
+                        model=model,
+                        messages=[
+                            {"role": "system", "content": "You are a professional B2B outreach expert. You write clean, plain-text style emails without ANY markdown symbols or placeholders."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.7
+                    )
+                    return self._parse_response(response.choices[0].message.content, company_name_lead, model)
+                except Exception as e:
+                    print(f"   ⚠️ Gemini {model} failed: {e}", flush=True)
+                    _time.sleep(2)
+                    continue
+
+        # Fallback to GitHub Models (Free for user)
         if self.github_client:
             for model in self.github_models:
                 try:

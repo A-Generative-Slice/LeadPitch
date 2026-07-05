@@ -5,8 +5,7 @@ from src.agent import PitchAgent
 from src.mailer import Mailer
 from src.git_util import sync_csv_to_github
 
-DAILY_EMAIL_CAP = int(os.getenv("DAILY_EMAIL_CAP", "450"))
-
+DAILY_EMAIL_CAP = int(os.getenv("DAILY_EMAIL_CAP", "100"))
 class LeadProcessor:
     def __init__(self, csv_path):
         self.csv_path = csv_path
