@@ -2,7 +2,7 @@ name: 🦅 LeadPitch Autopilot
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Every 5 min
+    - cron: '*/15 * * * *' # Every 15 min (reliable for batching 300 emails/day)
   push:
     branches: [ main ]
     paths-ignore:
@@ -47,7 +47,7 @@ jobs:
         if [ -z "${{ secrets.SMTP_PASSWORD }}" ]; then echo "❌ Missing SMTP_PASSWORD"; else echo "✅ SMTP_PASSWORD found"; fi
         if [ -z "${{ secrets.SMTP_EMAIL }}" ]; then echo "❌ Missing SMTP_EMAIL"; else echo "✅ SMTP_EMAIL found"; fi
 
-    - name: 🚀 Run Outreach (Drip Mode - 1 email per run)
+    - name: 🚀 Run Outreach (Turbo Batch Mode - targeting 300 emails/day)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -58,4 +58,4 @@ jobs:
         SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         COMPANY_NAME: ${{ secrets.COMPANY_NAME }}
       run: |
-        python3 main.py
+        python3 main.py --all

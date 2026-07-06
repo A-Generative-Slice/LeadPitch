@@ -5,7 +5,7 @@ from src.agent import PitchAgent
 from src.mailer import Mailer
 from src.git_util import sync_csv_to_github
 
-DAILY_EMAIL_CAP = int(os.getenv("DAILY_EMAIL_CAP", "100"))
+DAILY_EMAIL_CAP = int(os.getenv("DAILY_EMAIL_CAP", "300"))
 class LeadProcessor:
     def __init__(self, csv_path):
         self.csv_path = csv_path
@@ -64,8 +64,8 @@ class LeadProcessor:
             print("No new leads to process. Check if 'Sent Status' column is correctly set to 'No' in your CSV.", flush=True)
             return
 
-        batch_size = min(int(os.getenv("BATCH_SIZE", "15")), remaining_today)
-        leads_to_process = unsent_leads.iloc[:batch_size] if all_leads else unsent_leads.iloc[:1]
+        batch_size = min(int(os.getenv("BATCH_SIZE", "25")), remaining_today)
+        leads_to_process = unsent_leads.iloc[:batch_size] if all_leads else unsent_leads.iloc[:5]
         
         for index, row in leads_to_process.iterrows():
             client_name = row.get('Client Name', 'Valued Partner')
@@ -109,7 +109,7 @@ class LeadProcessor:
             if not dry_run:
                 sync_csv_to_github(self.csv_path)
 
-            if all_leads and index != leads_to_process.index[-1]:
-                delay = 120 # 2-min gap between emails (batch mode in Actions)
+            if len(leads_to_process) > 1 and index != leads_to_process.index[-1]:
+                delay = 30 # 30s gap between emails (optimized for 300 emails/day)
                 print(f"Waiting {delay} seconds for next lead to avoid spam flags...", flush=True)
                 time.sleep(delay)

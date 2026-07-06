@@ -39,13 +39,13 @@ def manual_run():
 
 def run_scheduler(csv_path, dry_run):
     scheduler = BackgroundScheduler()
-    # Run every 20 minutes
-    scheduler.add_job(job, 'interval', minutes=20, args=[csv_path, dry_run])
+    # Run every 4 minutes (targeting ~360 runs/day, safely capped at 300 by DAILY_EMAIL_CAP)
+    scheduler.add_job(job, 'interval', minutes=4, args=[csv_path, dry_run])
     
     # Trigger the first job immediately
     job(csv_path, dry_run)
     
-    print("Scheduler initialized. Running one email every 20 minutes...", flush=True)
+    print("Scheduler initialized. Running one email every 4 minutes (targeting 300 emails/day)...", flush=True)
     scheduler.start()
 
 def job(csv_path, dry_run, all_leads=False):

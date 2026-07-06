@@ -7,10 +7,10 @@ LeadPitch is an automated sales assistant that lives in your cloud. It generates
 ## 🏎️ New Workflow: "Full Pilot"
 We've moved beyond manual scripts. LeadPitch now runs on **GitHub Actions**, meaning it works while you sleep.
 
-- **Cloud-Native Automation**: Runs every **10 minutes** automatically via GitHub Actions.
+- **Cloud-Native Automation**: Runs every **15 minutes** automatically via GitHub Actions in Turbo Batch Mode.
 - **🔍 Auto-Diagnostic**: Built-in secret verification ensures your keys are always set correctly.
 - **💾 Real-Time Sync**: Every email sent is immediately synced back to `clients.csv` in your repository.
-- **🛡️ Safety First**: **Drip Mode** (1 email per 10 min) keeps your Gmail account healthy and avoids spam blocks.
+- **🚀 High-Volume Target**: **Turbo Batch Mode** sends up to 25 emails per run (with 30s safety gaps), reliably achieving your **300 emails per day** target.
 
 ## 🚀 Getting Started
 
