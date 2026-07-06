@@ -19,7 +19,7 @@ def sync_csv_to_github(csv_path):
     Updates the CSV on GitHub using the REST API.
     More reliable in cloud environments than GitPython.
     """
-    github_token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
     username, repo_name = _get_repo_info()
     
     if not github_token:
@@ -48,11 +48,21 @@ def sync_csv_to_github(csv_path):
 
         IST = timezone(timedelta(hours=5, minutes=30))
         commit_message = f"Cloud Update: {datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S')} [skip ci]"
+        author_name = os.getenv("GIT_AUTHOR_NAME", "Mohammad Hussain")
+        author_email = os.getenv("GIT_AUTHOR_EMAIL", "agenerativeslice@gmail.com")
         put_data = {
             "message": commit_message,
             "content": content,
             "sha": sha,
-            "branch": "main"
+            "branch": "main",
+            "committer": {
+                "name": author_name,
+                "email": author_email
+            },
+            "author": {
+                "name": author_name,
+                "email": author_email
+            }
         }
         
         put_response = requests.put(url, headers=headers, json=put_data)
@@ -71,7 +81,7 @@ def send_github_notification(status="OFFLINE"):
     """
     Creates an issue on GitHub to trigger a push notification to the user's phone.
     """
-    github_token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
     username, repo_name = _get_repo_info()
     
     if not github_token:
@@ -98,7 +108,7 @@ def clear_github_notifications():
     """
     Closes any open 'Offline' issues to keep the notification list clean.
     """
-    github_token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    github_token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
     username, repo_name = _get_repo_info()
     
     if not github_token:
