@@ -48,8 +48,8 @@ def sync_csv_to_github(csv_path):
 
         IST = timezone(timedelta(hours=5, minutes=30))
         commit_message = f"Cloud Update: {datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S')} [skip ci]"
-        author_name = os.getenv("GIT_AUTHOR_NAME", "Mohammad Hussain")
-        author_email = os.getenv("GIT_AUTHOR_EMAIL", "agenerativeslice@gmail.com")
+        author_name = os.getenv("GIT_AUTHOR_NAME", "smdhussain06")
+        author_email = os.getenv("GIT_AUTHOR_EMAIL", "s.m.d.hussainjoe@gmail.com")
         put_data = {
             "message": commit_message,
             "content": content,
