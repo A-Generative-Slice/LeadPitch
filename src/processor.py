@@ -104,12 +104,12 @@ class LeadProcessor:
             # Save progress locally
             df.to_csv(self.csv_path, index=False)
             print(f"Successfully processed {client_name}.", flush=True)
-            
-            # Sync back to GitHub if not a dry run
-            if not dry_run:
-                sync_csv_to_github(self.csv_path)
 
             if len(leads_to_process) > 1 and index != leads_to_process.index[-1]:
                 delay = 30 # 30s gap between emails (optimized for 300 emails/day)
                 print(f"Waiting {delay} seconds for next lead to avoid spam flags...", flush=True)
                 time.sleep(delay)
+
+        # Sync back to GitHub once at the end of the batch if not a dry run
+        if not dry_run:
+            sync_csv_to_github(self.csv_path)
