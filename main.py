@@ -3,6 +3,7 @@ import time
 import os
 import sys
 import threading
+from datetime import datetime, timezone, timedelta
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from src.processor import LeadProcessor
@@ -39,13 +40,18 @@ def manual_run():
 
 def run_scheduler(csv_path, dry_run):
     scheduler = BackgroundScheduler()
-    # Run every 4 minutes (targeting ~360 runs/day, safely capped at 300 by DAILY_EMAIL_CAP)
-    scheduler.add_job(job, 'interval', minutes=4, args=[csv_path, dry_run])
     
-    # Trigger the first job immediately
-    job(csv_path, dry_run)
+    # Calculate tomorrow at 12 PM IST
+    IST = timezone(timedelta(hours=5, minutes=30))
+    now = datetime.now(IST)
+    tomorrow = now + timedelta(days=1)
+    start_date = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 12, 0, 0, tzinfo=IST)
     
-    print("Scheduler initialized. Running one email every 4 minutes (targeting 300 emails/day)...", flush=True)
+    # Run every 15 minutes, starting tomorrow at 12 PM
+    scheduler.add_job(job, 'interval', minutes=15, start_date=start_date, args=[csv_path, dry_run])
+    
+    print(f"Scheduler initialized. First action scheduled for tomorrow at {start_date.strftime('%Y-%m-%d %H:%M:%S %Z')}.", flush=True)
+    print("Running one email every 15 minutes (targeting 80 emails/day)...", flush=True)
     scheduler.start()
 
 def job(csv_path, dry_run, all_leads=False):
